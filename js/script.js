@@ -106,17 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
       setClock('.timer', deadline);
 
       // Modal
+      
 
       const openModal = document.querySelectorAll('[data-modal]'),
             modal = document.querySelector('.modal'),
             closeModal = document.querySelector('[data-close]');
             openModal.forEach(item =>{
-               item .addEventListener('click', ()=>{
-                  modal.classList.add('show');
-                  modal.classList.remove('hide');
-                  document.body.style.overflow = 'hidden';
-               });
+               item .addEventListener('click', open);
             })
+
+            function open(){
+               modal.classList.add('show');
+               modal.classList.remove('hide');
+               document.body.style.overflow = 'hidden';
+               clearInterval(modalTimerId);
+            }
 
             function close() {
                modal.classList.add('hide');
@@ -136,6 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
                if(e.code === 'Escape'&& modal.classList.contains('show')){
                   close();
                }
-            })
+            });
+
+            // Modal timing
+
+            const  modalTimerId = setTimeout(open,3000);
+
+            function showModalByScroll(){
+               if(window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1){
+                  open();
+                  //window.scrollY(получаем значения прокрутки ) + document.documentElement.clientHeight (получаеи значение высоты видимого элемента страницы)
+                  //document.documentElement.scrollHeight (получаеи значение всей высоты страницы(всей прокрутки))
+                  window.removeEventListener('scroll', showModalByScroll)
+               }
+            }
+
+            window.addEventListener('scroll', showModalByScroll);
 
 });
